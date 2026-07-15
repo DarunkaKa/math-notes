@@ -1,14 +1,3 @@
-#!/usr/bin/env python3
-"""Запуск сайту. Робить дві речі:
-
-1. Перескладає список конспектів (те, що робив build.py) — щоб не забувати.
-2. Віддає файли із забороною кешування, інакше браузер показує стару
-   версію сайту після кожної правки.
-
-Запуск:  python3 serve.py
-Зупинка: Ctrl+C
-"""
-
 import http.server
 import socketserver
 from pathlib import Path
@@ -24,10 +13,6 @@ class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
     def do_GET(self):
-        # Список конспектів перескладаємо перед КОЖНОЮ віддачею.
-        # Інакше він застаріває щоразу, коли правиш конспект: на сторінці
-        # конспекту картки рахуються наживо з файлу, а в списку тем — з
-        # index.json, і цифри розходяться.
         if self.path.split("?")[0] == "/notes/index.json":
             try:
                 build.main(quiet=True)
@@ -42,7 +27,7 @@ class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
         super().end_headers()
 
     def log_message(self, *args):
-        pass  # не засмічувати Термінал
+        pass
 
 
 if __name__ == "__main__":

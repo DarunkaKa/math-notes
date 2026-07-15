@@ -3,7 +3,6 @@ const search = document.getElementById("search");
 
 let index = [];
 
-// --- розбір файлу конспекту --------------------------------------------
 
 function stripFrontMatter(text) {
   return text.replace(/^---\n.*?\n---\n/s, "");
@@ -15,16 +14,7 @@ function section(body, name) {
   return m ? m[1].trim() : "";
 }
 
-// Ділить секцію на пари «### заголовок» + тіло під ним.
-//
-// За замовчуванням лицьовий бік картки — це рядок після ###, а все нижче —
-// зворот. Якщо ж у картці є рядок `---`, то все до нього теж належить
-// лицьовому боку. Це дозволяє класти на питання малюнок:
-//
-//   ### Який це трикутник?
-//   <svg>…</svg>
-//   ---
-//   Рівнобедрений.
+
 function splitItems(text) {
   const parts = text.split(/^### /m).filter((p) => p.trim());
   return parts.map((p) => {
@@ -53,7 +43,6 @@ function parseNote(text) {
   };
 }
 
-// --- рендер ------------------------------------------------------------
 
 function md(text) {
   return marked.parse(text || "");
@@ -74,7 +63,6 @@ function render(html) {
   typeset(app);
 }
 
-// --- екрани ------------------------------------------------------------
 
 function renderHome() {
   const sections = [...new Set(index.map((n) => n.section))];
@@ -93,7 +81,7 @@ function renderHome() {
     .join("")}</div>`);
 }
 
-// Розділ показує теми (як плитки) і конспекти, що лежать у розділі напряму.
+
 function renderSection(name) {
   const notes = index.filter((n) => n.section === name);
   const topics = [...new Set(notes.map((n) => n.topic).filter(Boolean))];
@@ -123,29 +111,81 @@ function renderSection(name) {
   `);
 }
 
-// Тема показує свої підтеми в порядку вивчення.
+
+const MIX_SIZE = 50;
+
+
 function renderTopic(section, topic) {
   const notes = index.filter((n) => n.section === section && n.topic === topic);
+  const total = notes.reduce((s, n) => s + (n.cards || 0), 0);
+
+  
+  const mix = total
+    ? `<a class="mix-card" href="#/mix/${encodeURIComponent(section)}/${encodeURIComponent(topic)}">
+        <strong>Усі картки теми</strong>
+        <span class="meta">${Math.min(MIX_SIZE, total)} випадкових
+          із ${total} · щоразу нові</span>
+      </a>`
+    : "";
+
   render(`
     <nav class="crumbs">
       <a href="#/section/${encodeURIComponent(section)}">← ${section}</a>
     </nav>
     <h1>${topic}</h1>
+    ${mix}
     ${notes.length ? noteList(notes) : `<p class="empty">У цій темі ще немає конспектів.</p>`}
   `);
+}
+
+
+async function renderMix(section, topic) {
+  const notes = index.filter(
+    (n) => n.section === section && n.topic === topic && n.cards
+  );
+  const back = `#/topic/${encodeURIComponent(section)}/${encodeURIComponent(topic)}`;
+
+  render(`
+    <nav class="crumbs"><a href="${back}">← ${topic}</a></nav>
+    <h1>Усі картки теми</h1>
+    ${
+      notes.length
+        ? `<div id="deck"></div>`
+        : `<p class="empty">У цій темі ще немає карток.</p>`
+    }
+  `);
+  if (!notes.length) return;
+
+  const texts = await Promise.all(
+    notes.map((n) => fetch(n.path).then((r) => r.text()))
+  );
+
+ 
+  const pool = [];
+  texts.forEach((text, i) => {
+    parseNote(text).cards.forEach((c) =>
+      pool.push({ ...c, source: notes[i].title })
+    );
+  });
+
+  if (!document.getElementById("deck") || !pool.length) return;
+
+  startDeck(sample(pool, MIX_SIZE), { shuffle: true, pool, size: MIX_SIZE });
 }
 
 function noteList(notes) {
   return `<ul class="list">${notes
     .map((n, i) => {
+      const step = n.order >= 999 ? i + 1 : n.order;
+      const sub = n.order < 999 && !Number.isInteger(n.order);
       const meta = [
         n.cards ? `${n.cards} ${plural(n.cards, "картка", "картки", "карток")}` : "",
         n.tasks ? `${n.tasks} ${plural(n.tasks, "завдання", "завдання", "завдань")}` : "",
       ]
         .filter(Boolean)
         .join(" · ");
-      return `<li><a href="#/note/${encodeURIComponent(n.path)}">
-        <span class="step">${i + 1}</span>
+      return `<li${sub ? ' class="sub"' : ""}><a href="#/note/${encodeURIComponent(n.path)}">
+        <span class="step">${step}</span>
         <strong>${n.title}</strong>
         <span class="meta">${meta}</span>
       </a></li>`;
@@ -158,8 +198,6 @@ async function renderNote(path, mode = "read") {
   const text = await fetch(path).then((r) => r.text());
   const parsed = parseNote(text);
 
-  // Вкладку без вмісту не показуємо взагалі: додаси картки чи завдання
-  // у файл — вона з'явиться сама.
   const tab = (id, label, count) => {
     if (count === 0) return "";
     const badge = count > 0 ? ` <span class="badge">${count}</span>` : "";
@@ -210,7 +248,6 @@ async function renderNote(path, mode = "read") {
   if (mode === "cards" && parsed.cards.length) startDeck(parsed.cards);
 }
 
-// --- флеш-картки -------------------------------------------------------
 
 let deck = null;
 
@@ -223,6 +260,10 @@ function shuffled(arr) {
   return a;
 }
 
+function sample(arr, n) {
+  return shuffled(arr).slice(0, n);
+}
+
 function startDeck(cards, opts = {}) {
   let queue = opts.queue || cards.map((_, i) => i);
   if (opts.shuffle) queue = shuffled(queue);
@@ -233,6 +274,8 @@ function startDeck(cards, opts = {}) {
     pos: 0,
     flipped: false,
     shuffle: !!opts.shuffle,
+    pool: opts.pool || null,
+    size: opts.size || 0,
   };
   drawDeck();
 }
@@ -241,7 +284,7 @@ function drawDeck(opts = {}) {
   const box = document.getElementById("deck");
   if (!box) return;
 
-  // колода закінчилась
+
   if (deck.pos >= deck.queue.length) {
     box.innerHTML = `
       <div class="summary">
@@ -263,13 +306,22 @@ function drawDeck(opts = {}) {
       <div class="progress"><div class="bar"
         style="width:${(deck.pos / deck.queue.length) * 100}%"></div></div>
       <button class="chip ${deck.shuffle ? "on" : ""}" data-act="shuffle"
-        title="Перемішати картки">Перемішати</button>
+        title="${
+          deck.pool
+            ? `Витягти нові ${deck.size} карток з усієї теми`
+            : "Перемішати картки"
+        }">Перемішати</button>
     </div>
 
     <div class="flashcard" data-act="flip">
       <div class="card-turn">
         <div class="face ${deck.flipped ? "back" : "front"}">
           <span class="face-label">${deck.flipped ? "Відповідь" : "Питання"}</span>
+          ${
+            deck.flipped && card.source
+              ? `<span class="card-source">${card.source}</span>`
+              : ""
+          }
           <div class="face-body">${
             deck.flipped
               ? md(card.body || "_(відповіді немає)_")
@@ -291,14 +343,10 @@ function drawDeck(opts = {}) {
     <p class="keys">Пробіл — перевернути · ← → — назад і вперед</p>`;
   typeset(box);
 
-  // Друга половина повороту. Клас лишається на елементі — знімати не треба:
-  // анімація доїжджає до природного стану і на цьому все.
   if (opts.enter) box.querySelector(".flashcard").classList.add("enter");
 }
 
-// Поворот у два такти. Вміст міняється на середині, коли картка
-// стоїть ребром — так формули ніколи не рендеряться в 3D-контексті,
-// де KaTeX розсипає складені знаки (≠ втрачає риску).
+
 const TURN_MS = 180;
 let turning = false;
 
@@ -320,7 +368,15 @@ function deckAction(act) {
     flipCard();
     return;
   } else if (act === "shuffle") {
-    startDeck(deck.cards, { shuffle: !deck.shuffle });
+    if (deck.pool) {
+      startDeck(sample(deck.pool, deck.size), {
+        shuffle: true,
+        pool: deck.pool,
+        size: deck.size,
+      });
+    } else {
+      startDeck(deck.cards, { shuffle: !deck.shuffle });
+    }
     return;
   } else if (act === "prev") {
     if (deck.pos > 0) deck.pos--;
@@ -329,7 +385,11 @@ function deckAction(act) {
     deck.pos++;
     deck.flipped = false;
   } else if (act === "restart") {
-    startDeck(deck.cards, { shuffle: deck.shuffle });
+    startDeck(deck.cards, {
+      shuffle: deck.shuffle,
+      pool: deck.pool,
+      size: deck.size,
+    });
     return;
   }
   drawDeck();
@@ -369,7 +429,6 @@ function renderSearch(query) {
   );
 }
 
-// --- взаємодія ---------------------------------------------------------
 
 app.addEventListener("click", (e) => {
   const actor = e.target.closest("[data-act]");
@@ -392,7 +451,6 @@ search.addEventListener("input", (e) => {
   else route();
 });
 
-// --- маршрутизація -----------------------------------------------------
 
 function plural(n, one, few, many) {
   const m10 = n % 10, m100 = n % 100;
@@ -406,6 +464,8 @@ function route() {
   if (kind === "section") renderSection(decodeURIComponent(arg));
   else if (kind === "topic")
     renderTopic(decodeURIComponent(arg), decodeURIComponent(arg2));
+  else if (kind === "mix")
+    renderMix(decodeURIComponent(arg), decodeURIComponent(arg2));
   else if (kind === "note") renderNote(decodeURIComponent(arg), arg2 || "read");
   else renderHome();
 }

@@ -80,7 +80,7 @@ code {
   font-size: 0.9em;
 }
 
-/* головна */
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -102,7 +102,7 @@ code {
 .card h2 { margin: 0 0 0.35rem; font-size: 1.15rem; }
 .card p { margin: 0; color: var(--muted); font-size: 0.9rem; }
 
-/* списки */
+
 .list { list-style: none; padding: 0; margin: 0; }
 
 .list a {
@@ -119,6 +119,37 @@ code {
 }
 
 .list a:hover { border-color: var(--accent); }
+
+
+.mix-card {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  background: var(--accent-soft);
+  text-decoration: none;
+  color: var(--text);
+}
+
+.mix-card strong { color: var(--accent); }
+.mix-card:hover { filter: brightness(0.97); }
+
+
+.list li.sub a {
+  margin-left: 1.75rem;
+  background: transparent;
+  border-color: transparent;
+  border-left: 2px solid var(--line);
+  border-radius: 0;
+}
+
+.list li.sub a:hover {
+  border-color: transparent;
+  border-left-color: var(--accent);
+}
 .meta { margin-left: auto; color: var(--muted); font-size: 0.85rem; }
 
 .step {
@@ -139,7 +170,7 @@ code {
 .crumbs a { color: var(--muted); text-decoration: none; font-size: 0.9rem; }
 .crumbs a:hover { color: var(--accent); }
 
-/* вкладки режимів */
+
 .tabs {
   display: flex;
   gap: 0.4rem;
@@ -169,7 +200,7 @@ code {
   font-weight: 600;
 }
 
-/* схема-дерево (розбиття на види) */
+
 .scheme {
   margin: 1.5rem 0;
   overflow-x: auto;
@@ -211,7 +242,7 @@ code {
   font-size: 11px;
 }
 
-/* схеми й малюнки */
+
 .figures {
   display: flex;
   flex-wrap: wrap;
@@ -231,8 +262,7 @@ code {
   text-align: center;
 }
 
-/* currentColor у SVG успадковує колір тексту — тому схеми
-   самі підлаштовуються під світлу й темну тему */
+
 .figures svg {
   width: 100%;
   height: auto;
@@ -248,7 +278,7 @@ code {
   font-family: "Times New Roman", serif;
 }
 
-/* словесні підписи на схемі — не курсивом і дрібніше за букви */
+
 .figures svg text.word {
   font-size: 7px;
   font-style: normal;
@@ -256,7 +286,7 @@ code {
   fill: var(--muted);
 }
 
-/* одна широка схема на всю ширину тексту */
+
 .figure-wide {
   margin: 1.5rem 0;
   display: flex;
@@ -282,13 +312,11 @@ code {
 .figure-wide svg text { font-size: 11px; }
 .figure-wide svg text.vertex { font-weight: 700; font-size: 12px; }
 
-/* Малюнки з дрібним viewBox (~90 одиниць) розтягуються сильніше, тому
-   той самий розмір шрифту виглядає велетенським і налазить на лінії.
-   Клас compact робить підписи пропорційними до фігури. */
+
 .figure-wide svg.compact text { font-size: 6.5px; }
 .figure-wide svg.compact text.angle { font-size: 7px; }
 
-/* пара трикутників поруч (ознаки рівності) — viewBox ~190 одиниць */
+
 .figure-wide svg.pair text,
 .figures svg.pair text { font-size: 8px; }
 
@@ -306,8 +334,7 @@ code {
 .figure-wide svg text.angle {
   fill: var(--accent);
   font-size: 11px;
-  text-anchor: middle;      /* позначка кута центрується на своєму місці,
-                               інакше з'їжджає на сторону трикутника */
+  text-anchor: middle;      
   dominant-baseline: middle;
 }
 
@@ -332,12 +359,11 @@ code {
   color: var(--muted);
 }
 
-/* конспект */
+
 .prose h2 { font-size: 1.3rem; margin: 2rem 0 0.75rem; }
 .prose h3 { font-size: 1.08rem; margin: 1.5rem 0 0.5rem; }
 .prose p, .prose li { margin: 0.6rem 0; }
-/* overflow-y: hidden тут різав низ дробів з індексами (S_{A₁B₁C₁}).
-   Вертикальні відступи дають формулі місце, щоб нічого не обрізалось. */
+
 .prose .katex-display {
   margin: 1.2rem 0;
   overflow-x: auto;
@@ -360,7 +386,7 @@ code {
 
 .prose th { background: var(--accent-soft); font-weight: 600; }
 
-/* флеш-картки */
+
 .deck-bar {
   display: flex;
   align-items: center;
@@ -418,17 +444,13 @@ code {
   margin-bottom: 1.25rem;
 }
 
-/* УВАГА: не називати цей клас .inner — KaTeX використовує .inner
-   для накладених елементів (з них збирається ≠), і будь-яке наше
-   правило на .inner всередині картки роз'їжджає формули. */
+
 .flashcard .card-turn {
   min-height: 300px;
   display: grid;
 }
 
-/* Поворот через keyframes, а не transition: анімація закінчується
-   природним станом (transform: none). Якщо вона з будь-якої причини
-   не відпрацює — картка просто одразу на місці, а не застрягає ребром. */
+
 @keyframes card-out {
   from { transform: none; }
   to { transform: rotateY(90deg); }
@@ -448,7 +470,7 @@ code {
 }
 
 .face {
-  position: relative;      /* якір для .face-label і .hint */
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -475,6 +497,17 @@ code {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+
+.card-source {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  max-width: 55%;
+  text-align: right;
+  color: var(--accent);
+  font-size: 0.72rem;
 }
 
 .face-body { font-size: 1.15rem; line-height: 1.5; }
@@ -534,7 +567,7 @@ code {
   font-size: 0.78rem;
 }
 
-/* підсумок проходу */
+
 .summary {
   text-align: center;
   padding: 3rem 2rem;
@@ -565,7 +598,7 @@ code {
 
 .reveal:hover { background: var(--accent-soft); border-color: var(--accent); }
 
-/* завдання */
+
 .task {
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -598,7 +631,7 @@ code {
 
 .solution p:first-child { margin-top: 0; }
 
-/* те саме для формул на картках */
+
 .katex-display {
   overflow-x: auto;
   overflow-y: hidden;

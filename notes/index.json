@@ -3,7 +3,7 @@
     "title": "Квадратні рівняння",
     "section": "Алгебра",
     "topic": "",
-    "order": 1,
+    "order": 1.0,
     "path": "notes/algebra/kvadratni-rivnyannya.md",
     "cards": 4,
     "tasks": 0
@@ -12,45 +12,135 @@
     "title": "Види трикутників",
     "section": "Геометрія",
     "topic": "Трикутники",
-    "order": 1,
+    "order": 1.0,
     "path": "notes/geometry/trykutnyky/vydy-trykutnykiv.md",
-    "cards": 22,
+    "cards": 28,
     "tasks": 0
   },
   {
     "title": "Співвідношення між сторонами і кутами",
     "section": "Геометрія",
     "topic": "Трикутники",
-    "order": 2,
+    "order": 2.0,
     "path": "notes/geometry/trykutnyky/storony-i-kuty.md",
-    "cards": 25,
+    "cards": 31,
     "tasks": 0
   },
   {
     "title": "Ознаки рівності трикутників",
     "section": "Геометрія",
     "topic": "Трикутники",
-    "order": 3,
+    "order": 3.0,
     "path": "notes/geometry/trykutnyky/oznaky-rivnosti.md",
-    "cards": 23,
+    "cards": 27,
     "tasks": 0
   },
   {
     "title": "Ознаки подібності трикутників",
     "section": "Геометрія",
     "topic": "Трикутники",
-    "order": 4,
+    "order": 4.0,
     "path": "notes/geometry/trykutnyky/oznaky-podibnosti.md",
-    "cards": 31,
+    "cards": 35,
     "tasks": 0
   },
   {
     "title": "Визначні лінії у трикутнику",
     "section": "Геометрія",
     "topic": "Трикутники",
-    "order": 5,
+    "order": 5.0,
     "path": "notes/geometry/trykutnyky/vyznachni-liniyi.md",
-    "cards": 29,
+    "cards": 33,
+    "tasks": 0
+  },
+  {
+    "title": "Властивості медіан",
+    "section": "Геометрія",
+    "topic": "Трикутники",
+    "order": 5.1,
+    "path": "notes/geometry/trykutnyky/vlastyvosti-median.md",
+    "cards": 28,
+    "tasks": 0
+  },
+  {
+    "title": "Властивості бісектрис",
+    "section": "Геометрія",
+    "topic": "Трикутники",
+    "order": 5.2,
+    "path": "notes/geometry/trykutnyky/vlastyvosti-bisektrys.md",
+    "cards": 26,
+    "tasks": 0
+  },
+  {
+    "title": "Властивості висот",
+    "section": "Геометрія",
+    "topic": "Трикутники",
+    "order": 5.3,
+    "path": "notes/geometry/trykutnyky/vlastyvosti-vysot.md",
+    "cards": 17,
+    "tasks": 0
+  },
+  {
+    "title": "Властивості серединних перпендикулярів",
+    "section": "Геометрія",
+    "topic": "Трикутники",
+    "order": 5.4,
+    "path": "notes/geometry/trykutnyky/vlastyvosti-seredynnyh-perpendykulyariv.md",
+    "cards": 25,
+    "tasks": 0
+  },
+  {
+    "title": "Властивості середньої лінії",
+    "section": "Геометрія",
+    "topic": "Трикутники",
+    "order": 5.5,
+    "path": "notes/geometry/trykutnyky/vlastyvosti-serednoyi-liniyi.md",
+    "cards": 22,
+    "tasks": 0
+  },
+  {
+    "title": "Вписане і описане кола",
+    "section": "Геометрія",
+    "topic": "Трикутники",
+    "order": 6.0,
+    "path": "notes/geometry/trykutnyky/vpysane-i-opysane-kola.md",
+    "cards": 24,
+    "tasks": 0
+  },
+  {
+    "title": "Площа трикутника",
+    "section": "Геометрія",
+    "topic": "Трикутники",
+    "order": 7.0,
+    "path": "notes/geometry/trykutnyky/plosha-trykutnyka.md",
+    "cards": 33,
+    "tasks": 0
+  },
+  {
+    "title": "Рівнобедрений трикутник",
+    "section": "Геометрія",
+    "topic": "Трикутники",
+    "order": 8.0,
+    "path": "notes/geometry/trykutnyky/rivnobedrenyi-trykutnyk.md",
+    "cards": 40,
+    "tasks": 0
+  },
+  {
+    "title": "Рівносторонній трикутник",
+    "section": "Геометрія",
+    "topic": "Трикутники",
+    "order": 9.0,
+    "path": "notes/geometry/trykutnyky/rivnostoronniy-trykutnyk.md",
+    "cards": 35,
+    "tasks": 0
+  },
+  {
+    "title": "Прямокутний трикутник",
+    "section": "Геометрія",
+    "topic": "Трикутники",
+    "order": 10.0,
+    "path": "notes/geometry/trykutnyky/pryamokutnyi-trykutnyk.md",
+    "cards": 82,
     "tasks": 0
   }
 ]

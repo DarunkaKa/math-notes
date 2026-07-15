@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-"""Сканує notes/ і складає notes/index.json — список усіх конспектів."""
-
 import json
 import re
 from pathlib import Path
@@ -21,13 +18,13 @@ def read_meta(path):
 
     body = text[m.end():] if m else text
     try:
-        order = int(meta.get("order", ""))
+        order = float(meta.get("order", ""))
     except ValueError:
-        order = 999  # без order — у кінець списку
+        order = 999
     return {
         "title": meta.get("title", path.stem),
         "section": meta.get("section", path.parent.name),
-        "topic": meta.get("topic", ""),  # порожньо — конспект лежить прямо в розділі
+        "topic": meta.get("topic", ""),
         "order": order,
         "path": str(path.relative_to(ROOT)),
         "cards": len(re.findall(r"^### ", _section(body, "Картки"), re.M)),
